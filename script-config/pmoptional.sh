@@ -21,7 +21,7 @@
         php artisan processmaker:install ;
         cd /opt/processmaker ;
         php artisan storage:link ;
-        npm install laravel-echo-server ;
+        npm install -g laravel-echo-server ;
         sed -i '/"protocol": "https",/c\"protocol": "http",' /opt/processmaker/laravel-echo-server.json ;
         sed -i '/"sslCertPath": "\/etc\/nginx\/ssl\/processmaker.local.processmaker.com.crt",/c\"sslCertPath": "",' /opt/processmaker/laravel-echo-server.json ;
         sed -i '/"sslKeyPath": "\/etc\/nginx\/ssl\/processmaker.local.processmaker.com.key",/c\"sslKeyPath": "",' /opt/processmaker/laravel-echo-server.json ;
@@ -30,10 +30,10 @@
         chmod -R ug+rwx storage bootstrap/cache ;
          
         mkdir /opt/processmaker/tmp ;
-        echo "HOME=/opt/processmaker" >> /opt/processmaker/.env ;
-        echo "PROCESSMAKER_SCRIPTS_HOME=/opt/processmaker/tmp" >> /opt/processmaker/.env ;
-        echo "DOCKER_HOST_URL=https://pm4-install-example.processmaker.net" >> /opt/processmaker/.env ;
-        echo "MAIL_FROM_ADDRESS=no-reply@processmaker.net" >> /opt/processmaker/.env ;
-        echo "MAIL_FROM_NAME=no-reply@processmaker.net" >> /opt/processmaker/.env ;
+        # echo "HOME=/opt/processmaker" >> /opt/processmaker/.env ;
+        # echo "PROCESSMAKER_SCRIPTS_HOME=/opt/processmaker/tmp" >> /opt/processmaker/.env ;
+        # echo "DOCKER_HOST_URL=https://pm4-install-example.processmaker.net" >> /opt/processmaker/.env ;
+        # echo "MAIL_FROM_ADDRESS=no-reply@processmaker.net" >> /opt/processmaker/.env ;
+        # echo "MAIL_FROM_NAME=no-reply@processmaker.net" >> /opt/processmaker/.env ;
         chown -R nginx:nginx /opt/processmaker ;
     fi

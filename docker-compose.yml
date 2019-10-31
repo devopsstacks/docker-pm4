@@ -14,7 +14,7 @@ services:
   processmaker:
     depends_on:
       - mysql
-    image: pm4:one
+    image: devopsstacks:pm4
     ports:
       - 80:80
       - 6001:6001

@@ -1,0 +1,59 @@
+version: "2.1"
+
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sample
+      MYSQL_DATABASE: pm4-db
+    container_name: pm4-db
+
+  processmaker:
+    depends_on:
+      - mysql
+    image: pm4:one
+    ports:
+      - 80:80
+      - 6001:6001
+    volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    container_name: pm4-app
+    environment:
+      PM_URL: https://artifacts.processmaker.net/pm4/beta/processmaker-beta8.tar.gz
+
+  executor-php:
+    image: processmaker4/executor-php
+    #container_name: pm4-executor-php
+  
+  executor-lua:
+    image: processmaker4/executor-lua
+    #container_name: pm4-executor-lua
+  
+  executor-node:
+    image: processmaker4/executor-node
+    #container_name: pm4-executor-node
+
+  executor-java:
+    image: processmaker4/executor-java
+    #container_name: pm4-executor-java
+
+  executor-csharp:
+    image: processmaker4/executor-csharp
+    #container_name: pm4-executor-csharp
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    container_name: pm4-phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    ports:
+     - 8080:80
+    environment:
+      PMA_HOST: mysql

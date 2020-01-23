@@ -57,8 +57,8 @@
 
 
 ## NodeJS ##
-  wget https://rpm.nodesource.com/setup_10.x ;
-  sh setup_10.x ;
+  wget https://rpm.nodesource.com/setup_12.x ;
+  sh setup_12.x ;
   yum -y install nodejs ; 
 
 ## supervisor ##
@@ -67,7 +67,7 @@
   mkdir /etc/supervisor ;
   echo_supervisord_conf > /etc/supervisor/supervisord.conf ;
   sed -i '/;\[include\]/c\\[include\]' /etc/supervisor/supervisord.conf ;
-  sed -i '/;files = relative\/directory\/\*.ini/c\files = \/etc\/supervisor\/processmaker\*' /etc/supervisor/supervisord.conf ;
+  sed -i '/;files = relative\/directory\/\*.ini/c\files = \/etc\/supervisor\/processmaker\*.conf' /etc/supervisor/supervisord.conf ;
   
 ## docker ##
   yum install -y docker ;
@@ -76,6 +76,9 @@
   
 ## Create processmaker directory ##
 mkdir -p /opt/processmaker ;
+
+## Install laravel echo server ##
+npm install -g laravel-echo-server ;
 
 ##### clean #####
   yum clean packages ;

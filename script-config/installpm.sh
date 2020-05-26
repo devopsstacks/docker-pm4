@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##### install tools #####
-  yum clean all && yum update -y && yum install epel-release sendmail wget -y  ;
+  yum clean all && yum update -y && yum install epel-release sendmail wget jq git -y  ;
   touch /etc/sysconfig/network ;
   
   cp /etc/hosts ~/hosts.new ;
@@ -22,7 +22,7 @@
   sed -i '/upload_max_filesize = 2M/c\upload_max_filesize = 24M' /etc/php.ini ;
   sed -i '/;date.timezone =/c\date.timezone = America/New_York' /etc/php.ini ;
   sed -i '/expose_php = On/c\expose_php = Off' /etc/php.ini ;
-  sed -i '/memory_limit = 128M/c\memory_limit = 512M' /etc/php.ini ;
+  sed -i '/memory_limit = 128M/c\memory_limit = -1' /etc/php.ini ;
 
 ## install opcache ##
   sed -i '/opcache.max_accelerated_files=4000/c\opcache.max_accelerated_files=10000' /etc/php.d/10-opcache.ini ;
@@ -34,7 +34,7 @@
 ## composer ##
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
-## Redis ##
+ ## Redis ##
   yum -y install gcc make ;
   wget http://download.redis.io/releases/redis-3.2.0.tar.gz ;
   tar xzf redis-3.2.0.tar.gz ;
@@ -67,18 +67,31 @@
   mkdir /etc/supervisor ;
   echo_supervisord_conf > /etc/supervisor/supervisord.conf ;
   sed -i '/;\[include\]/c\\[include\]' /etc/supervisor/supervisord.conf ;
-  sed -i '/;files = relative\/directory\/\*.ini/c\files = \/etc\/supervisor\/processmaker\*.conf' /etc/supervisor/supervisord.conf ;
+  sed -i '/;files = relative\/directory\/\*.ini/c\files = \/etc\/supervisor\/processmaker\*' /etc/supervisor/supervisord.conf ;
   
 ## docker ##
   yum install -y docker ;
   curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose ;
   chmod +x /usr/local/bin/docker-compose ;
+
+#"MSSQL connection" ;
+  curl https://packages.microsoft.com/config/rhel/7/prod.repo > /etc/yum.repos.d/mssql-release.repo ;
+  yum remove -y unixODBC* ;
+  yum install -y http://mirror.centos.org/centos/7/os/x86_64/Packages/unixODBC-2.3.1-14.el7.x86_64.rpm ;
+  yum install -y http://mirror.centos.org/centos/7/os/x86_64/Packages/unixODBC-devel-2.3.1-14.el7.x86_64.rpm ;
+  yum install -y gcc-c++ gcc php72-devel ;
+  yum install -y php72-odbc ;
+  yum install -y php7-pear ;
+  ACCEPT_EULA=Y yum install -y msodbcsql ;
+  pecl7 install sqlsrv ;
+  pecl7 install pdo_sqlsrv ;
+  echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini ;
+  echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini ;
+#"ODBC connection " ;
+  yum install -y unixODBC unixODBC-devel php72-odbc ;
   
 ## Create processmaker directory ##
 mkdir -p /opt/processmaker ;
-
-## Install laravel echo server ##
-npm install -g laravel-echo-server ;
 
 ##### clean #####
   yum clean packages ;

@@ -98,6 +98,11 @@ mkdir -p /opt/processmaker ;
 ## Unzip ##
  yum install -y unzip ;
 
+## PHP-Pcov ##
+ yum install -y unzip ;
+ pecl7 install pcov ;
+ echo "extension=pcov.so" >> /etc/php.ini ;
+ 
 ##### clean #####
   yum clean packages ;
   yum clean headers ;
